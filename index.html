@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>名護市クイズサイネージ</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 1080px;
+            height: 1400px;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Hiragino Sans', 'ヒラギノ角ゴシック', 'Yu Gothic', 'Meiryo', sans-serif;
+        }
+
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./images/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #4a90e2; /* フォールバック背景色 */
+        }
+
+        /* Question text */
+        .question {
+            position: absolute;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 900px;
+            text-align: center;
+            font-size: 50px;
+            font-weight: bold;
+            color: #fcf2e5;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Choice buttons */
+        .choices {
+            position: absolute;
+            top: 350px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+        }
+
+        .choice {
+            display: block;
+            width: 100%;
+            margin: 20px 0;
+            padding: 20px 40px;
+            background: #fcf2e5;
+            border: none;
+            border-radius: 50px;
+            font-size: 50px;
+            font-weight: bold;
+            color: #000;
+            text-align: left;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .choice:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        /* Menu button - 下部に固定 */
+        .menu-button {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 80px;
+            background: #fcf2e5;
+            border: none;
+            border-radius: 40px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #000;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .menu-button:hover {
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        .beer-mug {
+            position: absolute;
+            bottom: 300px;
+            right: 150px;
+            width: 120px;
+            height: 150px;
+        }
+
+        .beer-glass {
+            width: 80px;
+            height: 100px;
+            background: #F4D03F;
+            border: 4px solid #2C3E50;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .beer-foam {
+            width: 88px;
+            height: 30px;
+            background: #FFFFFF;
+            border-radius: 50%;
+            position: absolute;
+            top: -15px;
+            left: -8px;
+        }
+
+        .beer-handle {
+            width: 20px;
+            height: 40px;
+            border: 4px solid #2C3E50;
+            border-left: none;
+            border-radius: 0 20px 20px 0;
+            position: absolute;
+            right: -24px;
+            top: 20px;
+        }
+
+        /* ローディング表示用 */
+        .loading-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fcf2e5;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+
+    <!-- Beer mug decoration -->
+    <div class="beer-mug">
+        <div class="beer-glass">
+            <div class="beer-foam"></div>
+            <div class="beer-handle"></div>
+        </div>
+    </div>
+
+    <!-- Quiz content -->
+    <div class="question" id="question"></div>
+    
+    <div class="choices">
+        <button class="choice" id="choiceA"></button>
+        <button class="choice" id="choiceB"></button>
+        <button class="choice" id="choiceC"></button>
+        <button class="choice" id="choiceD"></button>
+    </div>
+
+    <!-- Menu button -->
+    <button class="menu-button">メニュー</button>
+
+    <script>
+        // Quiz data
+        const quizData = [
+            {
+                question: "沖縄・名護から全国へ！\n地元発のビール会社はどれ？",
+                choices: ["A. オリオンビール", "B. サントリー", "C. アサヒビール", "D. キリンビール"]
+            },
+            {
+                question: "名護市のゆるキャラの名前は？",
+                choices: ["A. なごむん", "B. なごじい", "C. なぐうぇーかた", "D. なごみん"]
+            },
+            {
+                question: "名護市が全国一位に選ばれたことがあるものはなーんだ？",
+                choices: ["A. パイナップル", "B. ビーチ", "C. 道の駅", "D. 紅芋"]
+            }
+        ];
+
+        // Random quiz selection
+        function loadRandomQuiz() {
+            const randomIndex = Math.floor(Math.random() * quizData.length);
+            const quiz = quizData[randomIndex];
+            
+            document.getElementById('question').innerText = quiz.question;
+            document.getElementById('choiceA').innerText = quiz.choices[0];
+            document.getElementById('choiceB').innerText = quiz.choices[1];
+            document.getElementById('choiceC').innerText = quiz.choices[2];
+            document.getElementById('choiceD').innerText = quiz.choices[3];
+        }
+
+        // Load quiz on page load
+        window.addEventListener('load', () => {
+            loadRandomQuiz();
+        });
+
+        // Background image error handling
+        const backgroundDiv = document.querySelector('.background');
+        const img = new Image();
+        img.onerror = function() {
+            console.log('Background image not found, using fallback color');
+            backgroundDiv.style.backgroundImage = 'linear-gradient(135deg, #4a90e2 0%, #357abd 100%)';
+        };
+        img.src = './images/background.png';
+    </script>
+</body>
+</html>
