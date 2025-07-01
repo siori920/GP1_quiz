@@ -8,8 +8,8 @@
         body {
             margin: 0;
             padding: 0;
-            width: 500px;
-            height: 710px;
+            width: 333px;
+            height: 473px;
             position: relative;
             overflow: hidden;
             font-family: 'Hiragino Sans', 'ヒラギノ角ゴシック', 'Yu Gothic', 'Meiryo', sans-serif;
@@ -25,12 +25,12 @@
         /* Question text */
         .question {
             position: absolute;
-            top: 60px;
+            top: 40px;
             left: 50%;
             transform: translateX(-50%);
-            width: 420px;
+            width: 280px;
             text-align: center;
-            font-size: 23px;
+            font-size: 15px;
             font-weight: bold;
             color: #fcf2e5;
             line-height: 1.2;
@@ -39,20 +39,20 @@
         /* Choice buttons */
         .choices {
             position: absolute;
-            top: 175px;
+            top: 117px;
             left: 50%;
             transform: translateX(-50%);
-            width: 370px;
+            width: 246px;
         }
         .choice {
             display: block;
             width: 100%;
-            margin: 10px 0;
-            padding: 10px 18px;
+            margin: 7px 0;
+            padding: 7px 12px;
             background: #fcf2e5;
             border: none;
-            border-radius: 23px;
-            font-size: 23px;
+            border-radius: 15px;
+            font-size: 15px;
             font-weight: bold;
             color: #000;
             text-align: left;
@@ -67,15 +67,15 @@
         /* Menu button - 下部に固定 */
         .menu-button {
             position: absolute;
-            bottom: 25px;
+            bottom: 17px;
             left: 50%;
             transform: translateX(-50%);
-            width: 93px;
-            height: 37px;
+            width: 62px;
+            height: 25px;
             background: #fcf2e5;
             border: none;
-            border-radius: 18px;
-            font-size: 15px;
+            border-radius: 12px;
+            font-size: 10px;
             font-weight: bold;
             color: #000;
             cursor: pointer;
@@ -91,37 +91,37 @@
         }
         .beer-mug {
             position: absolute;
-            bottom: 152px;
-            right: 70px;
-            width: 56px;
-            height: 70px;
+            bottom: 101px;
+            right: 47px;
+            width: 37px;
+            height: 47px;
         }
         .beer-glass {
-            width: 37px;
-            height: 46px;
+            width: 25px;
+            height: 31px;
             background: #F4D03F;
-            border: 2px solid #2C3E50;
-            border-radius: 4px;
+            border: 1px solid #2C3E50;
+            border-radius: 3px;
             position: relative;
         }
         .beer-foam {
-            width: 41px;
-            height: 14px;
+            width: 27px;
+            height: 9px;
             background: #FFFFFF;
             border-radius: 50%;
             position: absolute;
-            top: -7px;
-            left: -4px;
+            top: -5px;
+            left: -3px;
         }
         .beer-handle {
-            width: 9px;
-            height: 18px;
-            border: 2px solid #2C3E50;
+            width: 6px;
+            height: 12px;
+            border: 1px solid #2C3E50;
             border-left: none;
-            border-radius: 0 9px 9px 0;
+            border-radius: 0 6px 6px 0;
             position: absolute;
-            right: -11px;
-            top: 9px;
+            right: -7px;
+            top: 6px;
         }
         /* Result screen styles */
         .result-screen {
@@ -135,9 +135,9 @@
             align-items: center;
         }
         .result-card {
-            width: 280px;
-            height: 185px;
-            border-radius: 14px;
+            width: 186px;
+            height: 123px;
+            border-radius: 9px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -153,17 +153,17 @@
             background: #fcf2e5;
         }
         .result-header {
-            font-size: 17px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .result-main {
+            font-size: 22px;
             font-weight: bold;
             margin-bottom: 9px;
         }
-        .result-main {
-            font-size: 33px;
-            font-weight: bold;
-            margin-bottom: 14px;
-        }
         .result-footer {
-            font-size: 13px;
+            font-size: 9px;
             line-height: 1.4;
         }
         /* Quiz screen */
@@ -181,7 +181,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: #fcf2e5;
-            font-size: 11px;
+            font-size: 7px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
     </style>
