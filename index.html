@@ -8,8 +8,8 @@
         body {
             margin: 0;
             padding: 0;
-            width: 700px;
-            height: 1420px;
+            width: 1075px;
+            height: 1265px;
             position: relative;
             overflow: hidden;
             font-family: 'Hiragino Sans', 'ヒラギノ角ゴシック', 'Yu Gothic', 'Meiryo', sans-serif;
@@ -25,103 +25,103 @@
         /* Question text */
         .question {
             position: absolute;
-            top: 40px;
+            top: 80px;
             left: 50%;
             transform: translateX(-50%);
-            width: 1000px;
+            width: 600px;
             text-align: center;
-            font-size: 15px;
+            font-size: 32px;
             font-weight: bold;
             color: #fcf2e5;
-            line-height: 1.2;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            line-height: 1.4;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         /* Choice buttons */
         .choices {
             position: absolute;
-            top: 117px;
+            top: 300px;
             left: 50%;
             transform: translateX(-50%);
-            width: 1000px;
+            width: 700px;
         }
         .choice {
             display: block;
             width: 100%;
-            margin: 7px 0;
-            padding: 7px 12px;
+            margin: 20px 0;
+            padding: 25px 35px;
             background: #fcf2e5;
             border: none;
-            border-radius: 15px;
-            font-size: 15px;
+            border-radius: 30px;
+            font-size: 28px;
             font-weight: bold;
             color: #000;
             text-align: left;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
             transition: transform 0.2s;
         }
         .choice:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
         }
         /* Menu button - 下部に固定 */
         .menu-button {
             position: absolute;
-            bottom: 100px;
+            bottom: 120px;
             left: 50%;
             transform: translateX(-50%);
-            width: 62px;
-            height: 25px;
+            width: 180px;
+            height: 60px;
             background: #fcf2e5;
             border: none;
-            border-radius: 12px;
-            font-size: 10px;
+            border-radius: 25px;
+            font-size: 24px;
             font-weight: bold;
             color: #000;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             transition: transform 0.2s;
         }
         .menu-button:hover {
-            transform: translateX(-50%) translateY(-1px);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
         .beer-mug {
             position: absolute;
-            bottom: 101px;
-            right: 47px;
-            width: 37px;
-            height: 47px;
+            bottom: 120px;
+            right: 80px;
+            width: 90px;
+            height: 120px;
         }
         .beer-glass {
-            width: 25px;
-            height: 31px;
+            width: 65px;
+            height: 80px;
             background: #F4D03F;
-            border: 1px solid #2C3E50;
-            border-radius: 3px;
+            border: 3px solid #2C3E50;
+            border-radius: 8px;
             position: relative;
         }
         .beer-foam {
-            width: 27px;
-            height: 9px;
+            width: 71px;
+            height: 22px;
             background: #FFFFFF;
             border-radius: 50%;
             position: absolute;
-            top: -5px;
-            left: -3px;
+            top: -12px;
+            left: -6px;
         }
         .beer-handle {
-            width: 6px;
-            height: 12px;
-            border: 1px solid #2C3E50;
+            width: 15px;
+            height: 30px;
+            border: 3px solid #2C3E50;
             border-left: none;
-            border-radius: 0 6px 6px 0;
+            border-radius: 0 15px 15px 0;
             position: absolute;
-            right: -7px;
-            top: 6px;
+            right: -18px;
+            top: 15px;
         }
         /* Result screen styles */
         .result-screen {
@@ -135,15 +135,15 @@
             align-items: center;
         }
         .result-card {
-            width: 1000px;
-            height: 1420px;
-            border-radius: 9px;
+            width: 500px;
+            height: 350px;
+            border-radius: 25px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
             position: relative;
         }
         .correct-card {
@@ -153,18 +153,21 @@
             background: #fcf2e5;
         }
         .result-header {
-            font-size: 11px;
+            font-size: 28px;
             font-weight: bold;
-            margin-bottom: 6px;
+            margin-bottom: 20px;
+            color: #000;
         }
         .result-main {
-            font-size: 22px;
+            font-size: 56px;
             font-weight: bold;
-            margin-bottom: 9px;
+            margin-bottom: 25px;
+            color: #000;
         }
         .result-footer {
-            font-size: 9px;
+            font-size: 22px;
             line-height: 1.4;
+            color: #000;
         }
         /* Quiz screen */
         .quiz-screen {
@@ -181,7 +184,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: #fcf2e5;
-            font-size: 7px;
+            font-size: 18px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
     </style>
