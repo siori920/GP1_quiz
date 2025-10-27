@@ -291,9 +291,57 @@
             // Load a new random quiz
             loadRandomQuiz();
         }
+  // Show statistics in console
+        function showStats() {
+            console.clear();
+            console.log('='.repeat(60));
+            console.log('📊 クイズ回答統計');
+            console.log('='.repeat(60));
+            
+            quizData.forEach((quiz, index) => {
+                const stats = answerStats[quiz.id];
+                const total = stats.A + stats.B + stats.C + stats.D;
+                
+                console.log(`\n【問題${index + 1}】${quiz.question}`);
+                console.log(`正解: ${quiz.correct}`);
+                console.log('-'.repeat(50));
+                console.log(`A: ${stats.A}人 (${total > 0 ? Math.round(stats.A / total * 100) : 0}%)`);
+                console.log(`B: ${stats.B}人 (${total > 0 ? Math.round(stats.B / total * 100) : 0}%)`);
+                console.log(`C: ${stats.C}人 (${total > 0 ? Math.round(stats.C / total * 100) : 0}%)`);
+                console.log(`D: ${stats.D}人 (${total > 0 ? Math.round(stats.D / total * 100) : 0}%)`);
+                console.log(`合計: ${total}人`);
+            });
+            
+            console.log('\n' + '='.repeat(60));
+            console.log('💡 統計をリセットするには: resetStats()');
+            console.log('='.repeat(60));
+            
+            alert('統計をコンソールに表示しました。\nF12キーを押してコンソールを確認してください。');
+        }
+
+        // Reset statistics (call from console)
+        function resetStats() {
+            if (confirm('すべての統計をリセットしますか？')) {
+                answerStats = {
+                    quiz1: { A: 0, B: 0, C: 0, D: 0 },
+                    quiz2: { A: 0, B: 0, C: 0, D: 0 },
+                    quiz3: { A: 0, B: 0, C: 0, D: 0 }
+                };
+                saveStats();
+                console.log('✅ 統計をリセットしました');
+                showStats();
+            }
+        }
+
+        // Make resetStats available globally
+        window.resetStats = resetStats;
+
         // Load quiz on page load
         window.addEventListener('load', () => {
             loadRandomQuiz();
+            console.log('📝 クイズサイトが読み込まれました');
+            console.log('💡 統計を見るには「統計表示」ボタンをクリックしてください');
+            console.log('💡 またはコンソールで showStats() を実行してください');
         });
     </script>
 </body>
