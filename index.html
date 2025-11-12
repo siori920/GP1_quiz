@@ -89,6 +89,31 @@
             transform: translateX(-50%) translateY(-2px);
             box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
+        /* Stats button */
+        .stats-button {
+            position: absolute;
+            bottom: 160px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 50px;
+            background: rgba(252, 242, 229, 0.9);
+            border: none;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .stats-button:hover {
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+        }
         .beer-mug {
             position: absolute;
             bottom: 120px;
@@ -177,16 +202,6 @@
         .hidden {
             display: none !important;
         }
-        /* Loading message */
-        .loading-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fcf2e5;
-            font-size: 18px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
     </style>
 </head>
 <body>
@@ -220,26 +235,78 @@
     </div>
     <!-- Menu button (always visible) -->
     <button class="menu-button" onclick="returnToQuiz()">メニュー</button>
+    <!-- Stats button -->
+    <button class="stats-button" onclick="showStats()">📊 統計表示</button>
+    
     <script>
-        // Quiz data with correct answers
+        // Quiz data with correct answers and IDs
         const quizData = [
             {
+                id: 'quiz1',
                 question: "沖縄・名護から全国へ！\n地元発のビール会社はどれ？",
                 choices: ["A. オリオンビール", "B. サントリー", "C. アサヒビール", "D. キリンビール"],
                 correct: "A"
             },
             {
+                id: 'quiz2',
                 question: "名護市のゆるキャラの名前は？",
                 choices: ["A. なごむん", "B. なごじい", "C. なぐうぇーかた", "D. なごみん"],
                 correct: "C"
             },
             {
+                id: 'quiz3',
                 question: "名護市が全国一位に選ばれたことがあるものはなーんだ？",
                 choices: ["A. パイナップル", "B. ビーチ", "C. 道の駅", "D. 紅芋"],
                 correct: "C"
             }
         ];
+
         let currentQuiz = null;
+        let answerStats = null;
+
+        // Initialize or load statistics from localStorage
+        function initStats() {
+            const savedStats = localStorage.getItem('nagoQuizStats');
+            if (savedStats) {
+                try {
+                    answerStats = JSON.parse(savedStats);
+                } catch (e) {
+                    console.error('統計データの読み込みに失敗しました:', e);
+                    answerStats = createEmptyStats();
+                }
+            } else {
+                answerStats = createEmptyStats();
+            }
+        }
+
+        // Create empty statistics object
+        function createEmptyStats() {
+            return {
+                quiz1: { A: 0, B: 0, C: 0, D: 0 },
+                quiz2: { A: 0, B: 0, C: 0, D: 0 },
+                quiz3: { A: 0, B: 0, C: 0, D: 0 }
+            };
+        }
+
+        // Save statistics to localStorage
+        function saveStats() {
+            try {
+                localStorage.setItem('nagoQuizStats', JSON.stringify(answerStats));
+                console.log('✅ 統計を保存しました');
+            } catch (e) {
+                console.error('統計の保存に失敗しました:', e);
+            }
+        }
+
+        // Record answer
+        function recordAnswer(quizId, selectedChoice) {
+            if (answerStats[quizId] && answerStats[quizId][selectedChoice] !== undefined) {
+                answerStats[quizId][selectedChoice]++;
+                saveStats();
+                console.log(`📝 回答を記録: ${quizId} - ${selectedChoice}`);
+            }
+        }
+
         // Random quiz selection
         function loadRandomQuiz() {
             const randomIndex = Math.floor(Math.random() * quizData.length);
@@ -251,11 +318,16 @@
             document.getElementById('choiceC').innerText = currentQuiz.choices[2];
             document.getElementById('choiceD').innerText = currentQuiz.choices[3];
         }
+
         // Handle answer selection
         function selectAnswer(selectedChoice) {
+            // Record the answer
+            recordAnswer(currentQuiz.id, selectedChoice);
+            
             const isCorrect = selectedChoice === currentQuiz.correct;
             showResult(isCorrect);
         }
+
         // Show result screen
         function showResult(isCorrect) {
             const quizScreen = document.getElementById('quizScreen');
@@ -264,9 +336,11 @@
             const resultHeader = document.getElementById('resultHeader');
             const resultMain = document.getElementById('resultMain');
             const resultFooter = document.getElementById('resultFooter');
+
             // Hide quiz screen and show result screen
             quizScreen.classList.add('hidden');
             resultScreen.style.display = 'flex';
+
             if (isCorrect) {
                 // Correct answer
                 resultCard.className = 'result-card correct-card';
@@ -281,17 +355,21 @@
                 resultFooter.textContent = '正解を知りたい方はこちら';
             }
         }
+
         // Return to quiz screen
         function returnToQuiz() {
             const quizScreen = document.getElementById('quizScreen');
             const resultScreen = document.getElementById('resultScreen');
+
             // Hide result screen and show quiz screen
             resultScreen.style.display = 'none';
             quizScreen.classList.remove('hidden');
+
             // Load a new random quiz
             loadRandomQuiz();
         }
-  // Show statistics in console
+
+        // Show statistics in console
         function showStats() {
             console.clear();
             console.log('='.repeat(60));
@@ -322,26 +400,25 @@
         // Reset statistics (call from console)
         function resetStats() {
             if (confirm('すべての統計をリセットしますか？')) {
-                answerStats = {
-                    quiz1: { A: 0, B: 0, C: 0, D: 0 },
-                    quiz2: { A: 0, B: 0, C: 0, D: 0 },
-                    quiz3: { A: 0, B: 0, C: 0, D: 0 }
-                };
+                answerStats = createEmptyStats();
                 saveStats();
                 console.log('✅ 統計をリセットしました');
                 showStats();
             }
         }
 
-        // Make resetStats available globally
+        // Make functions available globally for console access
+        window.showStats = showStats;
         window.resetStats = resetStats;
 
         // Load quiz on page load
         window.addEventListener('load', () => {
+            initStats();
             loadRandomQuiz();
             console.log('📝 クイズサイトが読み込まれました');
-            console.log('💡 統計を見るには「統計表示」ボタンをクリックしてください');
+            console.log('💡 統計を見るには「📊 統計表示」ボタンをクリックしてください');
             console.log('💡 またはコンソールで showStats() を実行してください');
+            console.log('💡 統計をリセットするには resetStats() を実行してください');
         });
     </script>
 </body>
