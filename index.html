@@ -64,6 +64,10 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 16px rgba(0,0,0,0.3);
         }
+        .choice:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
         /* Menu button - 下部に固定 */
         .menu-button {
             position: absolute;
@@ -143,12 +147,23 @@
         .hidden {
             display: none !important;
         }
+        /* Loading indicator */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #fcf2e5;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 <body>
     <div class="background"></div>
     <!-- Quiz Screen -->
     <div class="quiz-screen" id="quizScreen">
+        <div class="loading" id="loading">読み込み中...</div>
         <!-- Quiz content -->
         <div class="question" id="question"></div>
         
@@ -196,18 +211,25 @@
         let currentQuiz = null;
         let answerStats = null;
 
-        // Initialize or load statistics from localStorage
-        function initStats() {
-            const savedStats = localStorage.getItem('nagoQuizStats');
-            if (savedStats) {
-                try {
-                    answerStats = JSON.parse(savedStats);
-                } catch (e) {
-                    console.error('統計データの読み込みに失敗しました:', e);
+        // Storage key for shared statistics
+        const STORAGE_KEY = 'nago-quiz-stats';
+
+        // Initialize statistics from persistent storage
+        async function initStats() {
+            try {
+                const result = await window.storage.get(STORAGE_KEY, true);
+                if (result && result.value) {
+                    answerStats = JSON.parse(result.value);
+                    console.log('✅ 共有統計を読み込みました');
+                } else {
                     answerStats = createEmptyStats();
+                    await saveStats();
+                    console.log('✅ 新しい統計を作成しました');
                 }
-            } else {
+            } catch (e) {
+                console.log('📝 統計が存在しないため、新規作成します');
                 answerStats = createEmptyStats();
+                await saveStats();
             }
         }
 
@@ -220,21 +242,21 @@
             };
         }
 
-        // Save statistics to localStorage
-        function saveStats() {
+        // Save statistics to persistent storage (shared)
+        async function saveStats() {
             try {
-                localStorage.setItem('nagoQuizStats', JSON.stringify(answerStats));
-                console.log('✅ 統計を保存しました');
+                await window.storage.set(STORAGE_KEY, JSON.stringify(answerStats), true);
+                console.log('✅ 共有統計を保存しました');
             } catch (e) {
-                console.error('統計の保存に失敗しました:', e);
+                console.error('❌ 統計の保存に失敗しました:', e);
             }
         }
 
         // Record answer
-        function recordAnswer(quizId, selectedChoice) {
+        async function recordAnswer(quizId, selectedChoice) {
             if (answerStats[quizId] && answerStats[quizId][selectedChoice] !== undefined) {
                 answerStats[quizId][selectedChoice]++;
-                saveStats();
+                await saveStats();
                 console.log(`📝 回答を記録: ${quizId} - ${selectedChoice}`);
             }
         }
@@ -249,12 +271,18 @@
             document.getElementById('choiceB').innerText = currentQuiz.choices[1];
             document.getElementById('choiceC').innerText = currentQuiz.choices[2];
             document.getElementById('choiceD').innerText = currentQuiz.choices[3];
+            
+            // Enable all buttons
+            document.querySelectorAll('.choice').forEach(btn => btn.disabled = false);
         }
 
         // Handle answer selection
-        function selectAnswer(selectedChoice) {
+        async function selectAnswer(selectedChoice) {
+            // Disable all buttons to prevent multiple clicks
+            document.querySelectorAll('.choice').forEach(btn => btn.disabled = true);
+            
             // Record the answer
-            recordAnswer(currentQuiz.id, selectedChoice);
+            await recordAnswer(currentQuiz.id, selectedChoice);
             
             const isCorrect = selectedChoice === currentQuiz.correct;
             showResult(isCorrect);
@@ -301,41 +329,49 @@
             loadRandomQuiz();
         }
 
-        // Show statistics in console
-        function showStats() {
-            console.clear();
-            console.log('='.repeat(60));
-            console.log('📊 クイズ回答統計');
-            console.log('='.repeat(60));
-            
-            quizData.forEach((quiz, index) => {
-                const stats = answerStats[quiz.id];
-                const total = stats.A + stats.B + stats.C + stats.D;
+        // Show statistics
+        async function showStats() {
+            try {
+                // Reload latest stats from storage
+                const result = await window.storage.get(STORAGE_KEY, true);
+                if (result && result.value) {
+                    answerStats = JSON.parse(result.value);
+                }
                 
-                console.log(`\n【問題${index + 1}】${quiz.question}`);
-                console.log(`正解: ${quiz.correct}`);
-                console.log('-'.repeat(50));
-                console.log(`A: ${stats.A}人 (${total > 0 ? Math.round(stats.A / total * 100) : 0}%)`);
-                console.log(`B: ${stats.B}人 (${total > 0 ? Math.round(stats.B / total * 100) : 0}%)`);
-                console.log(`C: ${stats.C}人 (${total > 0 ? Math.round(stats.C / total * 100) : 0}%)`);
-                console.log(`D: ${stats.D}人 (${total > 0 ? Math.round(stats.D / total * 100) : 0}%)`);
-                console.log(`合計: ${total}人`);
-            });
-            
-            console.log('\n' + '='.repeat(60));
-            console.log('💡 統計をリセットするには: resetStats()');
-            console.log('='.repeat(60));
-            
-            alert('統計をコンソールに表示しました。\nF12キーを押してコンソールを確認してください。');
+                console.clear();
+                console.log('='.repeat(60));
+                console.log('📊 クイズ回答統計（全デバイス共有）');
+                console.log('='.repeat(60));
+                
+                quizData.forEach((quiz, index) => {
+                    const stats = answerStats[quiz.id];
+                    const total = stats.A + stats.B + stats.C + stats.D;
+                    
+                    console.log(`\n【問題${index + 1}】${quiz.question}`);
+                    console.log(`正解: ${quiz.correct}`);
+                    console.log('-'.repeat(50));
+                    console.log(`A: ${stats.A}人 (${total > 0 ? Math.round(stats.A / total * 100) : 0}%)`);
+                    console.log(`B: ${stats.B}人 (${total > 0 ? Math.round(stats.B / total * 100) : 0}%)`);
+                    console.log(`C: ${stats.C}人 (${total > 0 ? Math.round(stats.C / total * 100) : 0}%)`);
+                    console.log(`D: ${stats.D}人 (${total > 0 ? Math.round(stats.D / total * 100) : 0}%)`);
+                    console.log(`合計: ${total}人`);
+                });
+                
+                console.log('\n' + '='.repeat(60));
+                console.log('💡 統計をリセットするには: resetStats()');
+                console.log('='.repeat(60));
+            } catch (e) {
+                console.error('❌ 統計の取得に失敗しました:', e);
+            }
         }
 
         // Reset statistics (call from console)
-        function resetStats() {
-            if (confirm('すべての統計をリセットしますか？')) {
+        async function resetStats() {
+            if (confirm('すべての統計をリセットしますか？\n※全デバイスの統計がリセットされます')) {
                 answerStats = createEmptyStats();
-                saveStats();
+                await saveStats();
                 console.log('✅ 統計をリセットしました');
-                showStats();
+                await showStats();
             }
         }
 
@@ -344,12 +380,22 @@
         window.resetStats = resetStats;
 
         // Load quiz on page load
-        window.addEventListener('load', () => {
-            initStats();
-            loadRandomQuiz();
-            console.log('📝 クイズサイトが読み込まれました');
-            console.log('💡 統計を見るには、コンソールで showStats() を実行してください');
-            console.log('💡 統計をリセットするには resetStats() を実行してください');
+        window.addEventListener('load', async () => {
+            const loading = document.getElementById('loading');
+            
+            try {
+                await initStats();
+                loadRandomQuiz();
+                loading.style.display = 'none';
+                
+                console.log('📝 クイズサイトが読み込まれました');
+                console.log('💡 統計を見るには、コンソールで showStats() を実行してください');
+                console.log('💡 統計をリセットするには resetStats() を実行してください');
+                console.log('🌐 統計は全デバイス・全ブラウザで共有されます');
+            } catch (e) {
+                console.error('❌ 初期化エラー:', e);
+                loading.textContent = 'エラーが発生しました';
+            }
         });
     </script>
 </body>
