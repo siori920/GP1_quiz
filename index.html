@@ -212,7 +212,7 @@
         let answerStats = null;
 
         // Google Apps Script Web App URL (デプロイ後のURLに置き換えてください)
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxBpfcHzsoeDp0msPaPGZeup_evDvALN_mo_o7nirrp6z0vCebzuj2biXp_L5u_kROc8w/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbz_pGJjyh3h80FPuk2X3B-PDLAtev53S15NCe8y2HDsUv5k9sX8eH-y0YIJfZJptcaobg/exec';
 
         // Create empty statistics object
         function createEmptyStats() {
@@ -240,22 +240,16 @@
             }
         }
 
-        // Save answer to server
+        // Save answer to server (URLパラメータを使用してCORS回避)
         async function saveAnswer(quizId, choice) {
             try {
-                const response = await fetch(API_URL, {
+                const url = `${API_URL}?quizId=${encodeURIComponent(quizId)}&choice=${encodeURIComponent(choice)}`;
+                const response = await fetch(url, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ quizId, choice })
+                    mode: 'no-cors'
                 });
                 
-                if (response.ok) {
-                    console.log('✅ 回答をサーバーに保存しました');
-                } else {
-                    console.error('❌ サーバーへの保存に失敗しました');
-                }
+                console.log('✅ 回答をサーバーに送信しました');
             } catch (e) {
                 console.error('❌ サーバー接続エラー:', e);
             }
