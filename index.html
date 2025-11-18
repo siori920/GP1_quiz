@@ -147,23 +147,12 @@
         .hidden {
             display: none !important;
         }
-        /* Loading indicator */
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-            color: #fcf2e5;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
     </style>
 </head>
 <body>
     <div class="background"></div>
     <!-- Quiz Screen -->
     <div class="quiz-screen" id="quizScreen">
-        <div class="loading" id="loading">読み込み中...</div>
         <!-- Quiz content -->
         <div class="question" id="question"></div>
         
@@ -207,13 +196,10 @@
                 correct: "C"
             }
         ];
-
         let currentQuiz = null;
         let answerStats = null;
-
         // Google Apps Script Web App URL (デプロイ後のURLに置き換えてください)
         const API_URL = 'https://script.google.com/macros/s/AKfycbz_pGJjyh3h80FPuk2X3B-PDLAtev53S15NCe8y2HDsUv5k9sX8eH-y0YIJfZJptcaobg/exec';
-
         // Create empty statistics object
         function createEmptyStats() {
             return {
@@ -222,8 +208,7 @@
                 quiz3: { A: 0, B: 0, C: 0, D: 0 }
             };
         }
-
-        // Initialize statistics from server
+        // Initialize statistics from server (バックグラウンドで実行)
         async function initStats() {
             try {
                 const response = await fetch(API_URL);
@@ -239,7 +224,6 @@
                 answerStats = createEmptyStats();
             }
         }
-
         // Save answer to server (URLパラメータを使用してCORS回避)
         async function saveAnswer(quizId, choice) {
             try {
@@ -254,7 +238,6 @@
                 console.error('❌ サーバー接続エラー:', e);
             }
         }
-
         // Record answer
         async function recordAnswer(quizId, selectedChoice) {
             // Update local stats immediately for UI
@@ -266,7 +249,6 @@
             await saveAnswer(quizId, selectedChoice);
             console.log(`📝 回答を記録: ${quizId} - ${selectedChoice}`);
         }
-
         // Random quiz selection
         function loadRandomQuiz() {
             const randomIndex = Math.floor(Math.random() * quizData.length);
@@ -281,7 +263,6 @@
             // Enable all buttons
             document.querySelectorAll('.choice').forEach(btn => btn.disabled = false);
         }
-
         // Handle answer selection
         async function selectAnswer(selectedChoice) {
             // Disable all buttons to prevent multiple clicks
@@ -293,7 +274,6 @@
             const isCorrect = selectedChoice === currentQuiz.correct;
             showResult(isCorrect);
         }
-
         // Show result screen
         function showResult(isCorrect) {
             const quizScreen = document.getElementById('quizScreen');
@@ -302,11 +282,9 @@
             const resultHeader = document.getElementById('resultHeader');
             const resultMain = document.getElementById('resultMain');
             const resultFooter = document.getElementById('resultFooter');
-
             // Hide quiz screen and show result screen
             quizScreen.classList.add('hidden');
             resultScreen.style.display = 'flex';
-
             if (isCorrect) {
                 // Correct answer
                 resultCard.className = 'result-card correct-card';
@@ -321,20 +299,16 @@
                 resultFooter.textContent = '正解を知りたい方はこちら';
             }
         }
-
         // Return to quiz screen
         function returnToQuiz() {
             const quizScreen = document.getElementById('quizScreen');
             const resultScreen = document.getElementById('resultScreen');
-
             // Hide result screen and show quiz screen
             resultScreen.style.display = 'none';
             quizScreen.classList.remove('hidden');
-
             // Load a new random quiz
             loadRandomQuiz();
         }
-
         // Show statistics
         async function showStats() {
             try {
@@ -370,26 +344,20 @@
                 console.error('❌ 統計の取得に失敗しました:', e);
             }
         }
-
         // Make functions available globally for console access
         window.showStats = showStats;
-
         // Load quiz on page load
-        window.addEventListener('load', async () => {
-            const loading = document.getElementById('loading');
+        window.addEventListener('load', () => {
+            // 統計の初期化をバックグラウンドで実行（待たない）
+            answerStats = createEmptyStats();
+            initStats();
             
-            try {
-                await initStats();
-                loadRandomQuiz();
-                loading.style.display = 'none';
-                
-                console.log('📝 クイズサイトが読み込まれました');
-                console.log('💡 統計を見るには、コンソールで showStats() を実行してください');
-                console.log('🌐 統計は全ブラウザ・全デバイスで共有されます');
-            } catch (e) {
-                console.error('❌ 初期化エラー:', e);
-                loading.textContent = 'エラーが発生しました';
-            }
+            // クイズをすぐに表示
+            loadRandomQuiz();
+            
+            console.log('📝 クイズサイトが読み込まれました');
+            console.log('💡 統計を見るには、コンソールで showStats() を実行してください');
+            console.log('🌐 統計は全ブラウザ・全デバイスで共有されます');
         });
     </script>
 </body>
