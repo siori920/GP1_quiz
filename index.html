@@ -179,21 +179,27 @@
         const quizData = [
             {
                 id: 'quiz1',
-                question: "沖縄・名護から全国へ！\n地元発のビール会社はどれ？",
-                choices: ["A. オリオンビール", "B. サントリー", "C. アサヒビール", "D. キリンビール"],
+                question: "名護市に本社がある、沖縄を代表するビールメーカーは？",
+                choices: ["A. オリオンビール", "B. やんばるビール", "C. ナゴビール", "D. おきなわビール"],
                 correct: "A"
             },
             {
                 id: 'quiz2',
-                question: "名護市のゆるキャラの名前は？",
-                choices: ["A. なごむん", "B. なごじい", "C. なぐうぇーかた", "D. なごみん"],
-                correct: "C"
+                question: "オリオンハッピーパークの工場見学ツアーの最後に参加者ができることはどれでしょう？",
+                choices: ["A. 自分でビール瓶にラベルを貼る", "B. 出来たてビールの試飲", "C. ビール醸造タンクの中に入って記念撮影", "D. ビール作り体験"],
+                correct: "B"
             },
             {
                 id: 'quiz3',
-                question: "名護市が全国一位に選ばれたことがあるものはなーんだ？",
-                choices: ["A. パイナップル", "B. ビーチ", "C. 道の駅", "D. 紅芋"],
-                correct: "C"
+                question: "名護市の特産品といえば？",
+                choices: ["A. 海ぶどう", "B. あぐー（豚）", "C. ハブ酒", "D. 紅芋"],
+                correct: "B"
+            }
+            {
+                id: 'quiz4',
+                question: "ひんぷんガジュマルの推定樹齢として最も近いのはどれでしょう？",
+                choices: ["A. 約150年", "B. 約300年", "C. 約350年", "D. 約600年"],
+                correct: "B"
             }
         ];
         let currentQuiz = null;
@@ -206,6 +212,7 @@
                 quiz1: { A: 0, B: 0, C: 0, D: 0 },
                 quiz2: { A: 0, B: 0, C: 0, D: 0 },
                 quiz3: { A: 0, B: 0, C: 0, D: 0 }
+                quiz4: { A: 0, B: 0, C: 0, D: 0 }
             };
         }
         // Initialize statistics from server (バックグラウンドで実行)
