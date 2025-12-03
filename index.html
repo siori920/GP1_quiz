@@ -194,7 +194,7 @@
                 question: "名護市の特産品といえば？",
                 choices: ["A. 海ぶどう", "B. あぐー（豚）", "C. ハブ酒", "D. 紅芋"],
                 correct: "B"
-            }
+            },
             {
                 id: 'quiz4',
                 question: "ひんぷんガジュマルの推定樹齢として最も近いのはどれでしょう？",
@@ -211,7 +211,7 @@
             return {
                 quiz1: { A: 0, B: 0, C: 0, D: 0 },
                 quiz2: { A: 0, B: 0, C: 0, D: 0 },
-                quiz3: { A: 0, B: 0, C: 0, D: 0 }
+                quiz3: { A: 0, B: 0, C: 0, D: 0 },
                 quiz4: { A: 0, B: 0, C: 0, D: 0 }
             };
         }
@@ -327,7 +327,7 @@
                 
                 console.clear();
                 console.log('='.repeat(60));
-                console.log('📊 クイズ回答統計（全ブラウザ・全デバイス共有）');
+                console.log('📊 クイズ回答統計(全ブラウザ・全デバイス共有)');
                 console.log('='.repeat(60));
                 
                 quizData.forEach((quiz, index) => {
@@ -355,7 +355,7 @@
         window.showStats = showStats;
         // Load quiz on page load
         window.addEventListener('load', () => {
-            // 統計の初期化をバックグラウンドで実行（待たない）
+            // 統計の初期化をバックグラウンドで実行(待たない)
             answerStats = createEmptyStats();
             initStats();
             
