@@ -71,7 +71,7 @@
         /* Menu button */
         .menu-button {
             position: absolute;
-            bottom: 180px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
             width: 180px;
@@ -96,7 +96,7 @@
         /* Explanation button */
         .explanation-button {
             position: absolute;
-            bottom: 260px;
+            bottom: 180px;
             left: 50%;
             transform: translateX(-50%);
             width: 180px;
@@ -128,6 +128,7 @@
             display: none;
             justify-content: center;
             align-items: center;
+            padding-bottom: 200px;
         }
         .result-card {
             width: 500px;
@@ -391,10 +392,12 @@
             const resultScreen = document.getElementById('resultScreen');
             const explanationScreen = document.getElementById('explanationScreen');
             const explanationText = document.getElementById('explanationText');
+            const explanationButton = document.getElementById('explanationButton');
             // Set explanation text with HTML for bold formatting
             explanationText.innerHTML = currentQuiz.explanation;
-            // Hide result screen and show explanation screen
+            // Hide result screen, explanation button and show explanation screen
             resultScreen.style.display = 'none';
+            explanationButton.style.display = 'none';
             explanationScreen.style.display = 'flex';
         }
         // Show statistics
