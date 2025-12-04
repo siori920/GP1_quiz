@@ -93,6 +93,31 @@
             transform: translateX(-50%) translateY(-2px);
             box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
+        /* Explanation button */
+        .explanation-button {
+            position: absolute;
+            bottom: 260px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 60px;
+            background: #fcf2e5;
+            border: none;
+            border-radius: 25px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .explanation-button:hover {
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
         /* Result screen styles */
         .result-screen {
             position: absolute;
@@ -147,6 +172,33 @@
         .hidden {
             display: none !important;
         }
+        /* Explanation screen */
+        .explanation-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .explanation-card {
+            width: 600px;
+            padding: 40px;
+            border-radius: 25px;
+            background: #fcf2e5;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            text-align: left;
+        }
+        .explanation-text {
+            font-size: 28px;
+            line-height: 1.6;
+            color: #000;
+        }
+        .explanation-text strong {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -171,6 +223,14 @@
             <div class="result-footer" id="resultFooter"></div>
         </div>
     </div>
+    <!-- Explanation Screen -->
+    <div class="explanation-screen" id="explanationScreen">
+        <div class="explanation-card">
+            <div class="explanation-text" id="explanationText"></div>
+        </div>
+    </div>
+    <!-- Explanation button -->
+    <button class="explanation-button" id="explanationButton" onclick="showExplanation()">解説</button>
     <!-- Menu button -->
     <button class="menu-button" onclick="returnToQuiz()">メニュー</button>
     
@@ -181,25 +241,29 @@
                 id: 'quiz1',
                 question: "名護市に本社がある、沖縄を代表するビールメーカーは？",
                 choices: ["A. オリオンビール", "B. やんばるビール", "C. ナゴビール", "D. おきなわビール"],
-                correct: "A"
+                correct: "A",
+                explanation: "オリオンビールは、沖縄を代表するビールメーカーで、名護市には工場があり、見学の後には<strong>「できたてのビールの試飲」</strong>ができます。"
             },
             {
                 id: 'quiz2',
                 question: "オリオンハッピーパークの工場見学ツアーの最後に参加者ができることはどれでしょう？",
                 choices: ["A. 自分でビール瓶にラベルを貼る", "B. 出来たてビールの試飲", "C. ビール醸造タンクの中に入って記念撮影", "D. ビール作り体験"],
-                correct: "B"
+                correct: "B",
+                explanation: "見学後に工場ならではの新鮮なオリオンビールの試飲ができます。"
             },
             {
                 id: 'quiz3',
                 question: "名護市の特産品といえば？",
                 choices: ["A. 海ぶどう", "B. あぐー（豚）", "C. ハブ酒", "D. 紅芋"],
-                correct: "B"
+                correct: "B",
+                explanation: "アグーは沖縄固有の貴重な在来豚で、名護市は<strong>「アグーの里」</strong>として宣言しており、アグー普及に力を入れています。"
             },
             {
                 id: 'quiz4',
                 question: "ひんぷんガジュマルの推定樹齢として最も近いのはどれでしょう？",
                 choices: ["A. 約150年", "B. 約300年", "C. 約350年", "D. 約600年"],
-                correct: "B"
+                correct: "B",
+                explanation: "名護市の市街地にあり、路上に生育する巨樹で、樹高19m、推定樹齢は330年です。昭和31年(1956)に県の天然記念物(動物)に指定された後、平成9年(1997)に国の天然記念物(植物)に指定されました。"
             }
         ];
         let currentQuiz = null;
@@ -289,9 +353,11 @@
             const resultHeader = document.getElementById('resultHeader');
             const resultMain = document.getElementById('resultMain');
             const resultFooter = document.getElementById('resultFooter');
+            const explanationButton = document.getElementById('explanationButton');
             // Hide quiz screen and show result screen
             quizScreen.classList.add('hidden');
             resultScreen.style.display = 'flex';
+            explanationButton.style.display = 'flex';
             if (isCorrect) {
                 // Correct answer
                 resultCard.className = 'result-card correct-card';
@@ -310,11 +376,26 @@
         function returnToQuiz() {
             const quizScreen = document.getElementById('quizScreen');
             const resultScreen = document.getElementById('resultScreen');
-            // Hide result screen and show quiz screen
+            const explanationScreen = document.getElementById('explanationScreen');
+            const explanationButton = document.getElementById('explanationButton');
+            // Hide result screen and explanation screen, show quiz screen
             resultScreen.style.display = 'none';
+            explanationScreen.style.display = 'none';
+            explanationButton.style.display = 'none';
             quizScreen.classList.remove('hidden');
             // Load a new random quiz
             loadRandomQuiz();
+        }
+        // Show explanation screen
+        function showExplanation() {
+            const resultScreen = document.getElementById('resultScreen');
+            const explanationScreen = document.getElementById('explanationScreen');
+            const explanationText = document.getElementById('explanationText');
+            // Set explanation text with HTML for bold formatting
+            explanationText.innerHTML = currentQuiz.explanation;
+            // Hide result screen and show explanation screen
+            resultScreen.style.display = 'none';
+            explanationScreen.style.display = 'flex';
         }
         // Show statistics
         async function showStats() {
