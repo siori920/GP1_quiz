@@ -68,6 +68,33 @@
             opacity: 0.6;
             cursor: not-allowed;
         }
+        /* 施設コンテンツへボタン（クイズ画面でのみ表示） */
+        .facility-button {
+            position: absolute;
+            bottom: 190px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 450px;
+            height: 80px;
+            background-color: #d8d7d7;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            transition: transform 0.2s;
+            border: none;
+        }
+        
+        .facility-button:hover {
+            transform: translateX(-50%) scale(1.02);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+        
         /* Menu button */
         .menu-button {
             position: absolute;
@@ -230,6 +257,9 @@
             <div class="explanation-text" id="explanationText"></div>
         </div>
     </div>
+    <!-- 施設コンテンツへボタン（クイズ画面でのみ表示） -->
+    <button class="facility-button" id="facilityButton" onclick="goToFacility()">施設コンテンツへ</button>
+    
     <!-- Explanation button -->
     <button class="explanation-button" id="explanationButton" onclick="showExplanation()">解説</button>
     <!-- Menu button -->
@@ -355,10 +385,12 @@
             const resultMain = document.getElementById('resultMain');
             const resultFooter = document.getElementById('resultFooter');
             const explanationButton = document.getElementById('explanationButton');
+            const facilityButton = document.getElementById('facilityButton');
             // Hide quiz screen and show result screen
             quizScreen.classList.add('hidden');
             resultScreen.style.display = 'flex';
             explanationButton.style.display = 'flex';
+            facilityButton.style.display = 'none';  // 結果画面では施設ボタンを非表示
             if (isCorrect) {
                 // Correct answer
                 resultCard.className = 'result-card correct-card';
@@ -373,16 +405,24 @@
                 resultFooter.textContent = '正解を知りたい方はこちら';
             }
         }
+        // 施設コンテンツへボタンのクリック処理
+        function goToFacility() {
+            // 必要に応じて遷移先のURLを設定
+            // window.location.href = 'facility.html'; // 実際のページに遷移する場合
+        }
+        
         // Return to quiz screen
         function returnToQuiz() {
             const quizScreen = document.getElementById('quizScreen');
             const resultScreen = document.getElementById('resultScreen');
             const explanationScreen = document.getElementById('explanationScreen');
             const explanationButton = document.getElementById('explanationButton');
+            const facilityButton = document.getElementById('facilityButton');
             // Hide result screen and explanation screen, show quiz screen
             resultScreen.style.display = 'none';
             explanationScreen.style.display = 'none';
             explanationButton.style.display = 'none';
+            facilityButton.style.display = 'flex';  // クイズ画面では施設ボタンを表示
             quizScreen.classList.remove('hidden');
             // Load a new random quiz
             loadRandomQuiz();
@@ -445,6 +485,9 @@
             
             // クイズをすぐに表示
             loadRandomQuiz();
+            
+            // 初期表示では施設ボタンを表示
+            document.getElementById('facilityButton').style.display = 'flex';
             
             console.log('📝 クイズサイトが読み込まれました');
             console.log('💡 統計を見るには、コンソールで showStats() を実行してください');
