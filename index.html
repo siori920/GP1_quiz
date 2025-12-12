@@ -71,7 +71,7 @@
         /* 施設コンテンツへボタン（クイズ画面でのみ表示） */
         .facility-button {
             position: absolute;
-            bottom: 190px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
             width: 450px;
@@ -98,7 +98,7 @@
         /* Menu button */
         .menu-button {
             position: absolute;
-            bottom: 100px;
+            bottom: 190px;
             left: 50%;
             transform: translateX(-50%);
             width: 180px;
@@ -299,6 +299,7 @@
         ];
         let currentQuiz = null;
         let answerStats = null;
+        let explanationTimer = null;
         // Google Apps Script Web App URL (デプロイ後のURLに置き換えてください)
         const API_URL = 'https://script.google.com/macros/s/AKfycbz_pGJjyh3h80FPuk2X3B-PDLAtev53S15NCe8y2HDsUv5k9sX8eH-y0YIJfZJptcaobg/exec';
         // Create empty statistics object
@@ -413,6 +414,12 @@
         
         // Return to quiz screen
         function returnToQuiz() {
+            // タイマーをクリア
+            if (explanationTimer) {
+                clearTimeout(explanationTimer);
+                explanationTimer = null;
+            }
+            
             const quizScreen = document.getElementById('quizScreen');
             const resultScreen = document.getElementById('resultScreen');
             const explanationScreen = document.getElementById('explanationScreen');
@@ -439,6 +446,16 @@
             resultScreen.style.display = 'none';
             explanationButton.style.display = 'none';
             explanationScreen.style.display = 'flex';
+            
+            // 既存のタイマーがあればクリア
+            if (explanationTimer) {
+                clearTimeout(explanationTimer);
+            }
+            
+            // 20秒後に自動的にクイズ画面に戻る
+            explanationTimer = setTimeout(() => {
+                returnToQuiz();
+            }, 20000);
         }
         // Show statistics
         async function showStats() {
